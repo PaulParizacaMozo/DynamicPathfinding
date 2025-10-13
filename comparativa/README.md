@@ -1,4 +1,3 @@
-
 # Benchmark de SSSP: BMSSP vs Dijkstra vs A*vs D* Lite
 
 Este experimento compara cuatro algoritmos de caminos mínimos de fuente única sobre **grids 4-direcciones con pesos unitarios**:
@@ -33,7 +32,7 @@ dstar,2000000,7994000,0,1999999,595.817,2999
 * **BMSSP vs A*:** ~**1.75×** más rápido.
 * **Ruta:** 2999 (óptima).
 
-**Figura:** `img/algoritmos/tiempos_2000x1000.png`
+![Tiempos por algoritmo — 2000x1000 (N=2,000,000)](img/tiempos_2000x1000.png)
 
 ---
 
@@ -52,7 +51,7 @@ dstar,3000000,11993000,0,2999999,917.996,3499
 * **BMSSP vs A*:** ~**1.84×** más rápido.
 * **Ruta:** 3499 (óptima).
 
-**Figura:** `img/algoritmos/tiempos_1500x2000.png`
+![Tiempos por algoritmo — 1500x2000 (N=3,000,000)](img/tiempos_1500x2000.png)
 
 ---
 
@@ -71,7 +70,7 @@ dstar,4000000,15992000,0,3999999,1275.344,3999
 * **BMSSP vs A*:** ~**1.91×** más rápido.
 * **Ruta:** 3999 (óptima).
 
-**Figura:** `algoritmos/img/tiempos_2000x2000.png`
+![Tiempos por algoritmo — 2000x2000 (N=4,000,000)](img/tiempos_2000x2000.png)
 
 ---
 
@@ -90,7 +89,7 @@ dstar,5000000,19991000,0,4999999,1577.945,4499
 * **BMSSP vs A*:** ~**1.90×** más rápido.
 * **Ruta:** 4499 (óptima).
 
-**Figura:** `algoritmos/img/tiempos_2500x2000.png`
+![Tiempos por algoritmo — 2500x2000 (N=5,000,000)](img/tiempos_2500x2000.png)
 
 ---
 
@@ -116,29 +115,8 @@ El tiempo crece casi linealmente con N para todos:
 
 ---
 
-## Cómo reproducir
-
-1. Compilar y generar cada grid automáticamente:
-
-   ```bash
-   ./run.sh
-   ```
-
-   (El script intenta márgenes de `B` en `[1, 1.5, 2, 2.5, 3]%` y se queda con la primera corrida donde todos hallan ruta y `bmssp < dijkstra`.)
-
-2. Las imágenes se generan con el script de Python y deben estar en:
-
-   ```
-   img/tiempos_2000x1000.png
-   img/tiempos_1500x2000.png
-   img/tiempos_2000x2000.png
-   img/tiempos_2500x2000.png
-   ```
-
----
-
 ## Conclusiones
 
-* En **grids 4-dir de gran escala y pesos unitarios**, **BMSSP** ofrece mejoras de ~**2.5×** sobre **Dijkstra** manteniendo rutas óptimas.
+* En **grids 4-dir** de gran escala y pesos unitarios, **BMSSP** ofrece mejoras de ~**2.5×** sobre **Dijkstra** manteniendo rutas óptimas.
 * El ajuste de **`B` (cota)** es clave: márgenes pequeños (1–3%) maximizan la poda y el rendimiento.
 * Para escenarios con pesos unitarios, usar **Dial** dentro del núcleo acotado es determinante.
