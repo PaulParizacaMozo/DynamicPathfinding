@@ -1,0 +1,82 @@
+# === Node / General ===
+node_modules/
+npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+package-lock.json.*.bak
+*.tsbuildinfo
+
+# === Vite / Build outputs ===
+dist/
+build/
+.tmp/
+.cache/
+.vite/
+.parcel-cache/
+coverage/
+
+# === Env files (mantén tus secretos fuera de git) ===
+.env
+.env.*
+backend/.env
+backend/.env.*
+frontend/.env
+frontend/.env.*
+
+# === Logs ===
+logs/
+*.log
+backend/logs/
+frontend/logs/
+
+# === OS files ===
+.DS_Store
+Thumbs.db
+
+# === Editors ===
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# === Frontend (React/Vite/TS) ===
+frontend/node_modules/
+frontend/dist/
+frontend/build/
+frontend/.vite/
+frontend/coverage/
+frontend/*.tsbuildinfo
+
+# === Backend (Node) ===
+backend/node_modules/
+backend/dist/
+backend/build/
+backend/coverage/
+backend/*.tsbuildinfo
+
+# === Engines (C++ toolchain) ===
+engines/bin/
+!engines/bin/.gitkeep
+engines/build/
+engines/obj/
+engines/out/
+engines/*.o
+engines/*.obj
+engines/*.a
+engines/*.lib
+engines/*.so
+engines/*.dll
+engines/*.dylib
+engines/*.exe
+engines/*.out
+engines/*.log
+
+# === Shell scripts outputs (si generas temporales) ===
+*.tmp
+*.temp
+
+# === Misc ===
+*.pid
+*.seed
+*.orig
+
