@@ -85,3 +85,5 @@ engines/*.log
 paper_dir/
 *.lock
 paper.html
+
+*.bin

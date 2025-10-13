@@ -28,7 +28,7 @@ const runExec = (exePath, inputData, res, algoName) => {
   child.stdin.end();
 };
 
-// === Dijkstra / A* / BMSSP (como ya tenías) ===
+// === Dijkstra / A* / BMSSP  ===
 app.post("/api/dijkstra", (req, res) => runExec(getExecutablePath("dijkstra"), req.body.trim(), res, "Dijkstra"));
 app.post("/api/astar", (req, res) => runExec(getExecutablePath("astar"), req.body.trim(), res, "A*"));
 app.post("/api/bmssp", (req, res) => runExec(getExecutablePath("bmssp"), req.body.trim(), res, "BMSSP"));
@@ -92,7 +92,7 @@ function parseGridBody(body) {
   return { header, gridLines };
 }
 
-/** INIT + PLAN (devolvemos el primer plan ya listo) */
+/** INIT + PLAN  */
 app.post("/api/dstar/init", async (req, res) => {
   try {
     const { header, gridLines } = parseGridBody(req.body);
