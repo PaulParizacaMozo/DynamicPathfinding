@@ -80,3 +80,8 @@ engines/*.log
 *.seed
 *.orig
 
+# Random files
+
+paper_dir/
+*.lock
+paper.html
