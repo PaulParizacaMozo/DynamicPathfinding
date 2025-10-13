@@ -3,12 +3,16 @@ import type { AlgoKey, EditMode } from "../lib/state";
 type Props = {
   rows: number; cols: number; density: number; algo: AlgoKey; mode: EditMode; speedMs: number;
   isPlaying: boolean; isBusy: boolean;
+  compareEnabled: boolean;
+  algo2: AlgoKey;
   onChangeRows: (v: number) => void;
   onChangeCols: (v: number) => void;
   onChangeDensity: (v: number) => void;
   onChangeAlgo: (a: AlgoKey) => void;
   onChangeMode: (m: EditMode) => void;
   onChangeSpeed: (ms: number) => void;
+  onToggleCompare: (enabled: boolean) => void;
+  onChangeAlgo2: (a: AlgoKey) => void;
   onEmpty: () => void;
   onRandom: () => void;
   onPlay: () => void;
@@ -18,7 +22,9 @@ type Props = {
 
 export default function Controls({
   rows, cols, density, algo, mode, speedMs, isPlaying, isBusy,
+  compareEnabled, algo2,
   onChangeRows, onChangeCols, onChangeDensity, onChangeAlgo, onChangeMode, onChangeSpeed,
+  onToggleCompare, onChangeAlgo2,
   onEmpty, onRandom, onPlay, onPause, onClear,
 }: Props) {
   return (
@@ -26,7 +32,17 @@ export default function Controls({
       <h2 style={{ margin: 0 }}>DynamicPathfinding</h2>
 
       <label>
-        Algoritmo:&nbsp;
+        <input 
+          type="checkbox" 
+          checked={compareEnabled} 
+          onChange={(e) => onToggleCompare(e.target.checked)}
+          disabled={isBusy || isPlaying}
+        />
+        &nbsp;Comparar algoritmos
+      </label>
+
+      <label>
+        Algoritmo 1:&nbsp;
         <select value={algo} onChange={(e) => onChangeAlgo(e.target.value as AlgoKey)} disabled={isBusy || isPlaying}>
           <option value="dstar">D* Lite</option>
           <option value="astar">A*</option>
@@ -34,6 +50,18 @@ export default function Controls({
           <option value="bmssp">BMSSP</option>
         </select>
       </label>
+
+      {compareEnabled && (
+        <label>
+          Algoritmo 2:&nbsp;
+          <select value={algo2} onChange={(e) => onChangeAlgo2(e.target.value as AlgoKey)} disabled={isBusy || isPlaying}>
+            <option value="dstar">D* Lite</option>
+            <option value="astar">A*</option>
+            <option value="dijkstra">Dijkstra</option>
+            <option value="bmssp">BMSSP</option>
+          </select>
+        </label>
+      )}
 
       <div style={{ display: "flex", gap: 8 }}>
         <label style={{ flex: 1 }}>

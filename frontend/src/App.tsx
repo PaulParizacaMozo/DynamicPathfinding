@@ -15,15 +15,26 @@ export default function App() {
   const [mode, setMode] = useState<EditMode>("toggleObstacle");
   const [speedMs, setSpeedMs] = useState(50);
 
+  // Comparación de algoritmos
+  const [compareEnabled, setCompareEnabled] = useState(false);
+  const [algo2, setAlgo2] = useState<AlgoKey>("astar");
+
   const [grid, setGrid] = useState<Cell[]>(() => new Array(20 * 30).fill(0) as Cell[]);
   const [start, setStart] = useState<Pt>({ r: 0, c: 0 });
   const [goal, setGoal] = useState<Pt>({ r: 19, c: 29 });
 
-  // Hook del agente (animación y replan)
+  // Hook del agente (animación y replan) - Algoritmo 1
   const {
     layers, agent, isPlaying, isBusy, status,
     play, pause, clearLayers, onObstacleChanged, onObstacleBatchChanged
   } = useAgent({ grid, rows, cols, start, goal, algo, speedMs });
+
+  // Hook del agente - Algoritmo 2 (para comparación)
+  const {
+    layers: layers2, agent: agent2, isPlaying: isPlaying2, isBusy: isBusy2, status: status2,
+    play: play2, pause: pause2, clearLayers: clearLayers2, 
+    onObstacleChanged: onObstacleChanged2, onObstacleBatchChanged: onObstacleBatchChanged2
+  } = useAgent({ grid, rows, cols, start, goal, algo: algo2, speedMs });
 
   // Rehacer grid con nuevas dimensiones
   useMemo(() => {
@@ -45,9 +56,28 @@ export default function App() {
     return g;
   };
 
-  function handleEmpty() { if (!isBusy && !isPlaying) { setGrid(makeEmptyGrid()); clearLayers(); } }
-  function handleRandom() { if (!isBusy && !isPlaying) { setGrid(makeRandomGrid()); clearLayers(); } }
-  function handleClear() { if (!isBusy && !isPlaying) clearLayers(); }
+  function handleEmpty() { 
+    if ((!isBusy && !isPlaying) && (!compareEnabled || (!isBusy2 && !isPlaying2))) { 
+      setGrid(makeEmptyGrid()); 
+      clearLayers(); 
+      if (compareEnabled) clearLayers2();
+    } 
+  }
+  
+  function handleRandom() { 
+    if ((!isBusy && !isPlaying) && (!compareEnabled || (!isBusy2 && !isPlaying2))) { 
+      setGrid(makeRandomGrid()); 
+      clearLayers(); 
+      if (compareEnabled) clearLayers2();
+    } 
+  }
+  
+  function handleClear() { 
+    if ((!isBusy && !isPlaying) && (!compareEnabled || (!isBusy2 && !isPlaying2))) {
+      clearLayers(); 
+      if (compareEnabled) clearLayers2();
+    }
+  }
 
   // === Click simple: izquierda = colocar (1), derecha = borrar (0) ===
   async function onClickCell(r: number, c: number) {
@@ -60,6 +90,7 @@ export default function App() {
       const id = idx(r, c, cols);
       next[id] = 1; // colocar siempre
       onObstacleChanged(r, c, true).catch(() => { });
+      if (compareEnabled) onObstacleChanged2(r, c, true).catch(() => { });
       return next as Cell[];
     });
   }
@@ -74,6 +105,7 @@ export default function App() {
       const id = idx(r, c, cols);
       next[id] = 0; // borrar siempre
       onObstacleChanged(r, c, false).catch(() => { });
+      if (compareEnabled) onObstacleChanged2(r, c, false).catch(() => { });
       return next as Cell[];
     });
   }
@@ -132,21 +164,24 @@ export default function App() {
     });
 
     await onObstacleBatchChanged(changes).catch(() => { });
+    if (compareEnabled) await onObstacleBatchChanged2(changes).catch(() => { });
     paintedSetRef.current.clear();
   }
 
   // Mover nodos inicio/fin (fuera de toggleObstacle)
   async function onClickCellMove(r: number, c: number) {
-    if (isBusy || isPlaying) return;
+    if (isBusy || isPlaying || (compareEnabled && (isBusy2 || isPlaying2))) return;
 
     if (mode === "moveStart" && !(r === goal.r && c === goal.c)) {
       setStart({ r, c });
       setGrid(prev => { const n = prev.slice(); n[idx(r, c, cols)] = 0; return n as Cell[]; });
       clearLayers();
+      if (compareEnabled) clearLayers2();
     } else if (mode === "moveGoal" && !(r === start.r && c === start.c)) {
       setGoal({ r, c });
       setGrid(prev => { const n = prev.slice(); n[idx(r, c, cols)] = 0; return n as Cell[]; });
       clearLayers();
+      if (compareEnabled) clearLayers2();
     }
   }
 
@@ -157,43 +192,94 @@ export default function App() {
   }
 
   return (
-    <div style={{ display: "flex", gap: 16, padding: 16, alignItems: "flex-start", fontFamily: "sans-serif" }}>
-      <div>
-        <Controls
-          rows={rows} cols={cols} density={density} algo={algo} mode={mode} speedMs={speedMs}
-          isPlaying={isPlaying} isBusy={isBusy}
-          onChangeRows={setRows}
-          onChangeCols={setCols}
-          onChangeDensity={setDensity}
-          onChangeAlgo={(a) => { if (!isBusy) setAlgo(a); }}
-          onChangeMode={setMode}
-          onChangeSpeed={setSpeedMs}
-          onEmpty={handleEmpty}
-          onRandom={handleRandom}
-          onPlay={() => play()}
-          onPause={() => pause()}
-          onClear={handleClear}
-        />
-        <div style={{ marginTop: 8, fontSize: 14 }}>
-          <b>Estado:</b> {status}
+    <div style={{ display: "flex", gap: 16, padding: 16, fontFamily: "sans-serif", flexDirection: "column" }}>
+      <div style={{ display: "flex", gap: 16, alignItems: "flex-start" }}>
+        <div>
+          <Controls
+            rows={rows} cols={cols} density={density} algo={algo} mode={mode} speedMs={speedMs}
+            isPlaying={isPlaying} isBusy={isBusy}
+            compareEnabled={compareEnabled}
+            algo2={algo2}
+            onChangeRows={setRows}
+            onChangeCols={setCols}
+            onChangeDensity={setDensity}
+            onChangeAlgo={(a) => { if (!isBusy && (!compareEnabled || !isBusy2)) setAlgo(a); }}
+            onChangeMode={setMode}
+            onChangeSpeed={setSpeedMs}
+            onToggleCompare={(enabled) => {
+              if (!isBusy && !isPlaying && !isBusy2 && !isPlaying2) {
+                setCompareEnabled(enabled);
+                if (!enabled) clearLayers2();
+              }
+            }}
+            onChangeAlgo2={(a) => { if (!isBusy2 && compareEnabled) setAlgo2(a); }}
+            onEmpty={handleEmpty}
+            onRandom={handleRandom}
+            onPlay={() => {
+              play();
+              if (compareEnabled) play2();
+            }}
+            onPause={() => {
+              pause();
+              if (compareEnabled) pause2();
+            }}
+            onClear={handleClear}
+          />
+          <div style={{ marginTop: 8, fontSize: 14 }}>
+            <b>Estado:</b> {status}
+          </div>
+          {compareEnabled && (
+            <div style={{ marginTop: 4, fontSize: 14 }}>
+              <b>Estado (Comparación):</b> {status2}
+            </div>
+          )}
+          <Legend />
         </div>
-        <Legend />
+
+        <div>
+          <div style={{ marginBottom: 8, fontSize: 14, fontWeight: "bold" }}>
+            Algoritmo: {algo.toUpperCase()}
+          </div>
+          <CanvasGrid
+            rows={rows}
+            cols={cols}
+            grid={grid}
+            layers={layers}
+            start={start}
+            goal={goal}
+            agent={isPlaying ? agent : undefined}
+            onClickCell={handleClickCell}
+            onRightClickCell={onRightClickCell}
+            onStartPaint={onStartPaint}
+            onPaintOver={onPaintOver}
+            onEndPaint={onEndPaint}
+          />
+        </div>
       </div>
 
-      <CanvasGrid
-        rows={rows}
-        cols={cols}
-        grid={grid}
-        layers={layers}
-        start={start}
-        goal={goal}
-        agent={isPlaying ? agent : undefined}
-        onClickCell={handleClickCell}
-        onRightClickCell={onRightClickCell}
-        onStartPaint={onStartPaint}
-        onPaintOver={onPaintOver}
-        onEndPaint={onEndPaint}
-      />
+      {compareEnabled && (
+        <div style={{ display: "flex", gap: 16, alignItems: "flex-start", marginLeft: 396 }}>
+          <div>
+            <div style={{ marginBottom: 8, fontSize: 14, fontWeight: "bold" }}>
+              Algoritmo: {algo2.toUpperCase()}
+            </div>
+            <CanvasGrid
+              rows={rows}
+              cols={cols}
+              grid={grid}
+              layers={layers2}
+              start={start}
+              goal={goal}
+              agent={isPlaying2 ? agent2 : undefined}
+              onClickCell={handleClickCell}
+              onRightClickCell={onRightClickCell}
+              onStartPaint={onStartPaint}
+              onPaintOver={onPaintOver}
+              onEndPaint={onEndPaint}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
