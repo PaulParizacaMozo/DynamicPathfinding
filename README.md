@@ -56,7 +56,7 @@ npm run dev
 3. Instalar dependencias del frontend y arrancar:
 
 ```bash
-cd ../../frontend
+cd ../frontend
 npm install
 npm run dev
 ```
