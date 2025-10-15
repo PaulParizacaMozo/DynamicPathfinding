@@ -32,7 +32,7 @@ dstar,2000000,7994000,0,1999999,595.817,2999
 * **BMSSP vs A*:** ~**1.75×** más rápido.
 * **Ruta:** 2999 (óptima).
 
-![Tiempos por algoritmo — 2000x1000 (N=2,000,000)](img/tiempos_2000x1000.png)
+![Tiempos por algoritmo — 2000x1000 (N=2,000,000)](https://github.com/PaulParizacaMozo/DynamicPathfinding/blob/main/comparativa/algoritmos/img/tiempos_2000x1000.png)
 
 ---
 
@@ -51,7 +51,7 @@ dstar,3000000,11993000,0,2999999,917.996,3499
 * **BMSSP vs A*:** ~**1.84×** más rápido.
 * **Ruta:** 3499 (óptima).
 
-![Tiempos por algoritmo — 1500x2000 (N=3,000,000)](img/tiempos_1500x2000.png)
+![Tiempos por algoritmo — 1500x2000 (N=3,000,000)](https://github.com/PaulParizacaMozo/DynamicPathfinding/blob/main/comparativa/algoritmos/img/tiempos_1500x2000.png)
 
 ---
 
@@ -70,7 +70,7 @@ dstar,4000000,15992000,0,3999999,1275.344,3999
 * **BMSSP vs A*:** ~**1.91×** más rápido.
 * **Ruta:** 3999 (óptima).
 
-![Tiempos por algoritmo — 2000x2000 (N=4,000,000)](img/tiempos_2000x2000.png)
+![Tiempos por algoritmo — 2000x2000 (N=4,000,000)](https://github.com/PaulParizacaMozo/DynamicPathfinding/blob/main/comparativa/algoritmos/img/tiempos_2000x2000.png)
 
 ---
 
@@ -89,7 +89,7 @@ dstar,5000000,19991000,0,4999999,1577.945,4499
 * **BMSSP vs A*:** ~**1.90×** más rápido.
 * **Ruta:** 4499 (óptima).
 
-![Tiempos por algoritmo — 2500x2000 (N=5,000,000)](img/tiempos_2500x2000.png)
+![Tiempos por algoritmo — 2500x2000 (N=5,000,000)](https://github.com/PaulParizacaMozo/DynamicPathfinding/blob/main/comparativa/algoritmos/img/tiempos_2500x2000.png)
 
 ---
 
